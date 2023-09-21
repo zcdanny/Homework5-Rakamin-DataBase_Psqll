@@ -1,0 +1,126 @@
+Server [localhost]:
+Database [postgres]:
+Port [5432]:
+Username [postgres]:
+Password for user postgres:
+psql (16.0)
+WARNING: Console code page (437) differs from Windows code page (1252)
+         8-bit characters might not work correctly. See psql reference
+         page "Notes for Windows users" for details.
+Type "help" for help.
+
+postgres=# create database db_hw6;
+CREATE DATABASE
+postgres=# \c db_hw6
+You are now connected to database "db_hw6" as user "postgres".
+db_hw6=# CREATE TABLE kategori(id serial primary key, nama varchar, description varchar, created_at timestamp, updated_at timestamp);
+CREATE TABLE
+db_hw6=# \dt
+          List of relations
+ Schema |   Name   | Type  |  Owner
+--------+----------+-------+----------
+ public | kategori | table | postgres
+(1 row)
+
+
+db_hw6=# CREATE TABLE Barang (id serial primary key, nama varchar, description varchar, kategori_id integer, created_at timestamp, updated_at timestamp, FOREIGN KEY (kategori_id) REFERENCES kategori(id));
+CREATE TABLE
+db_hw6=# \dt
+          List of relations
+ Schema |   Name   | Type  |  Owner
+--------+----------+-------+----------
+ public | barang   | table | postgres
+ public | kategori | table | postgres
+(2 rows)
+
+
+db_hw6=# INSERT INTO kategori(nama, description, created_at, updated_at) VALUES ('Sayur','semua jenis sayur', now(), now());
+INSERT 0 1
+db_hw6=# INSERT INTO kategori(nama, description, created_at, updated_at) VALUES ('Buah potong','buah yang dipotong', now(), now());
+INSERT 0 1
+db_hw6=# INSERT INTO kategori(nama, description, created_at, updated_at) VALUES ('Frozen Food','semua jenis frozen food', now(), now(
+db_hw6(# ));
+INSERT 0 1
+db_hw6=# SELECT * from kategori;
+ id |    nama     |       description       |         created_at         |         updated_at
+----+-------------+-------------------------+----------------------------+----------------------------
+  1 | Sayur       | semua jenis sayur       | 2023-09-21 19:28:32.903365 | 2023-09-21 19:28:32.903365
+  2 | Buah potong | buah yang dipotong      | 2023-09-21 19:28:47.700326 | 2023-09-21 19:28:47.700326
+  3 | Frozen Food | semua jenis frozen food | 2023-09-21 19:29:02.885475 | 2023-09-21 19:29:02.885475
+(3 rows)
+
+
+db_hw6=# INSERT INTO Barang(nama, description, kategori_id, created_at, updated_at) VALUES ('Bayam', 'bayam hidroponik', 1, now(), now());
+INSERT 0 1
+db_hw6=# INSERT INTO Barang(nama, description, kategori_id, created_at, updated_at) VALUES ('Semangka potong', 'Semangka yang sudah dikupas dan dipotong', 2, now(), now());
+INSERT 0 1
+db_hw6=# INSERT INTO Barang(nama, description, kategori_id, created_at, updated_at) VALUES ('Sosis', 'Sosis beku', 3, now(), now());
+INSERT 0 1
+db_hw6=# SELECT * from Barang;
+ id |      nama       |               description                | kategori_id |         created_at         |         updated_at
+----+-----------------+------------------------------------------+-------------+----------------------------+----------------------------
+  1 | Bayam           | bayam hidroponik                         |           1 | 2023-09-21 19:30:03.118314 | 2023-09-21 19:30:03.118314
+  2 | Semangka potong | Semangka yang sudah dikupas dan dipotong |           2 | 2023-09-21 19:30:15.414155 | 2023-09-21 19:30:15.414155
+  3 | Sosis           | Sosis beku                               |           3 | 2023-09-21 19:30:32.214215 | 2023-09-21 19:30:32.214215
+(3 rows)
+
+
+db_hw6=# UPDATE kategori SET nama = 'Sayur Impor', updated_at=now() WHERE id=1;
+UPDATE 1
+db_hw6=# UPDATE kategori SET description = 'semua jenis sayur impor', updated_at=now() WHERE id=1;
+UPDATE 1
+db_hw6=# SELECT * from kategori;
+ id |    nama     |       description       |         created_at         |         updated_at
+----+-------------+-------------------------+----------------------------+----------------------------
+  2 | Buah potong | buah yang dipotong      | 2023-09-21 19:28:47.700326 | 2023-09-21 19:28:47.700326
+  3 | Frozen Food | semua jenis frozen food | 2023-09-21 19:29:02.885475 | 2023-09-21 19:29:02.885475
+  1 | Sayur Impor | semua jenis sayur impor | 2023-09-21 19:28:32.903365 | 2023-09-21 19:31:56.33266
+(3 rows)
+
+
+db_hw6=# UPDATE Barang SET nama = 'Bayam Jepang', updated_at=now() WHERE id=2;
+UPDATE 1
+db_hw6=# UPDATE Barang SET description = 'Bayam Jepang Impor', updated_at=now() WHERE id=2;
+UPDATE 1
+db_hw6=# SELECT * from barang;
+ id |     nama     |    description     | kategori_id |         created_at         |         updated_at
+----+--------------+--------------------+-------------+----------------------------+----------------------------
+  1 | Bayam        | bayam hidroponik   |           1 | 2023-09-21 19:30:03.118314 | 2023-09-21 19:30:03.118314
+  3 | Sosis        | Sosis beku         |           3 | 2023-09-21 19:30:32.214215 | 2023-09-21 19:30:32.214215
+  2 | Bayam Jepang | Bayam Jepang Impor |           2 | 2023-09-21 19:30:15.414155 | 2023-09-21 19:32:47.432577
+(3 rows)
+
+
+db_hw6=# \x
+Expanded display is on.
+db_hw6=# SELECT * from Barang b JOIN kategori k ON b.kategori_id=k.id;
+-[ RECORD 1 ]---------------------------
+id          | 1
+nama        | Bayam
+description | bayam hidroponik
+kategori_id | 1
+created_at  | 2023-09-21 19:30:03.118314
+updated_at  | 2023-09-21 19:30:03.118314
+id          | 1
+nama        | Sayur Impor
+description | semua jenis sayur impor
+created_at  | 2023-09-21 19:28:32.903365
+updated_at  | 2023-09-21 19:31:56.33266
+-[ RECORD 2 ]---------------------------
+id          | 3
+nama        | Sosis
+description | Sosis beku
+kategori_id | 3
+created_at  | 2023-09-21 19:30:32.214215
+updated_at  | 2023-09-21 19:30:32.214215
+id          | 3
+nama        | Frozen Food
+description | semua jenis frozen food
+created_at  | 2023-09-21 19:29:02.885475
+updated_at  | 2023-09-21 19:29:02.885475
+-[ RECORD 3 ]---------------------------
+id          | 2
+nama        | Bayam Jepang
+description | Bayam Jepang Impor
+kategori_id | 2
+-- More  --
